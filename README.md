@@ -14,3 +14,5 @@ ServiceFlow主要是借助本地的rag，langchain的内容等，解决客户的
 ## 测试
 
 `python -m pytest -v test_order_query.py`
+
+当前版本仅支持通过订单号查询本地模拟订单。

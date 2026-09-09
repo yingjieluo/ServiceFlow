@@ -1,9 +1,11 @@
 # Python虚拟环境
 .venv/
+# .venv/末尾的/表示忽略这个文件夹；
 
 # Python缓存
 __pycache__/
 *.pyc
+# *.pyc中的*表示任意文件名。
 
 # pytest缓存
 .pytest_cache/

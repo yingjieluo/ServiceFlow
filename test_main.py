@@ -76,3 +76,71 @@ def test_get_missing_order() -> None:
 
     assert response.status_code == 404
     assert response.json()["error"]["code"] == "ORDER_NOT_FOUND"
+
+def test_create_order_success() -> None:
+    response = client.post(
+        "/orders",
+        json={
+            "order_id": "1003",
+            "user_id": "U003",
+            "product": "智能手表",
+            "amount": 899,
+            "status": "待付款",
+        },
+    )
+
+    assert response.status_code == 201
+
+    body = response.json()
+
+    assert body["data"]["order_id"] == "1003"
+    assert body["data"]["product"] == "智能手表"
+    assert body["data"]["amount"] == 899.0
+
+# 重复订单测试：
+def test_create_duplicate_order() -> None:
+    response = client.post(
+        "/orders",
+        json={
+            "order_id": "1001",
+            "user_id": "U001",
+            "product": "蓝牙耳机",
+            "amount": 299,
+            "status": "已发货",
+        },
+    )
+
+    assert response.status_code == 409
+
+    body = response.json()
+
+    assert body["detail"]["code"] == "ORDER_ALREADY_EXISTS"
+
+# 增加非法金额测试：
+def test_create_order_invalid_amount() -> None:
+    response = client.post(
+        "/orders",
+        json={
+            "order_id": "1005",
+            "user_id": "U005",
+            "product": "鼠标",
+            "amount": "abc",
+            "status": "待付款",
+        },
+    )
+
+    assert response.status_code == 422
+
+# 最后测试缺少必要字段：
+def test_create_order_missing_field() -> None:
+    response = client.post(
+        "/orders",
+        json={
+            "order_id": "1006",
+            "user_id": "U006",
+            "product": "显示器",
+            "amount": 1299,
+        },
+    )
+
+    assert response.status_code == 422
